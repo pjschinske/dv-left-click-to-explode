@@ -1,6 +1,6 @@
 
 # Left Click to Explode
-This is a mod for Derail Valley that allows users to easily explode and unexplode locomotives.
+This is a mod for Derail Valley that allows users to easily explode locomotives.
 
 I made it to help troubleshoot a different mod, and figured others could use it.
 
