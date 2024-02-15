@@ -1,31 +1,48 @@
 using System;
 using System.Reflection;
+using CommsRadioAPI;
 using HarmonyLib;
+using LeftClickToExplode.CommsRadioStates;
+using UnityEngine;
 using UnityModManagerNet;
 
-namespace LeftClickToExplode;
-
-public static class Main
+namespace LeftClickToExplode
 {
-	// Unity Mod Manage Wiki: https://wiki.nexusmods.com/index.php/Category:Unity_Mod_Manager
-	private static bool Load(UnityModManager.ModEntry modEntry)
+	public static class Main
 	{
-		Harmony? harmony = null;
+		public static UnityModManager.ModEntry.ModLogger Logger { get; private set; }
+		public static CommsRadioMode CommsRadioMode { get; private set; }
 
-		try
+		// Unity Mod Manage Wiki: https://wiki.nexusmods.com/index.php/Category:Unity_Mod_Manager
+		private static bool Load(UnityModManager.ModEntry modEntry)
 		{
-			harmony = new Harmony(modEntry.Info.Id);
-			harmony.PatchAll(Assembly.GetExecutingAssembly());
+			Harmony? harmony = null;
+			Logger = modEntry.Logger;
 
-			// Other plugin startup logic
+			try
+			{
+				harmony = new Harmony(modEntry.Info.Id);
+				harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+
+				// Other plugin startup logic
+				CommsRadioAPI.ControllerAPI.Ready += InitCommsRadioPage;
+				
+			}
+			catch (Exception ex)
+			{
+				modEntry.Logger.LogException($"Failed to load {modEntry.Info.DisplayName}:", ex);
+				harmony?.UnpatchAll(modEntry.Info.Id);
+				return false;
+			}
+
+			return true;
 		}
-		catch (Exception ex)
+
+		public static void InitCommsRadioPage()
 		{
-			modEntry.Logger.LogException($"Failed to load {modEntry.Info.DisplayName}:", ex);
-			harmony?.UnpatchAll(modEntry.Info.Id);
-			return false;
+			CommsRadioMode = CommsRadioMode.Create(new PointingAtNothingStateBehaviour(), Color.red);
 		}
-
-		return true;
 	}
+
 }

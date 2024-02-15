@@ -5,7 +5,7 @@ param (
 )
 
 Set-Location "$PSScriptRoot"
-$FilesToInclude = "Info.json","build/*","LICENSE"
+$FilesToInclude = "info.json","build/*","LICENSE"
 
 $modInfo = Get-Content -Raw -Path "Info.json" | ConvertFrom-Json
 $modId = $modInfo.Id
